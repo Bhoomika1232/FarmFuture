@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ crop.name | capitalize }} Asset Analysis | Agri-Chain</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --agri-green: #1b4332;
+            --agri-gold: #ffb703;
+            --agri-bg: #f8f9fa;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--agri-bg);
+            color: #333;
+        }
+
+        .navbar {
+            background-color: var(--agri-green) !important;
+            padding: 1rem 0;
+        }
+
+        /* Asset Header */
+        .asset-hero-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card { 
+            border: none; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* AI Verification Card */
+        .ai-verification-card {
+            background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%);
+            border: 2px solid #c6f6d5;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-verification-card::before {
+            content: "AI VERIFIED";
+            position: absolute;
+            top: 10px;
+            right: -25px;
+            background: var(--agri-gold);
+            color: var(--agri-green);
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 5px 30px;
+            transform: rotate(45deg);
+        }
+
+        /* Timeline Styling */
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 30px;
+            border-left: 3px solid #e9ecef;
+            padding-left: 25px;
+        }
+
+        .timeline-item:last-child {
+            border-left: 3px solid transparent;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -10px;
+            top: 0;
+            width: 18px;
+            height: 18px;
+            background-color: var(--agri-green);
+            border: 4px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.1);
+        }
+
+        /* Metric Badges */
+        .metric-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+
+        .metric-value {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--agri-green);
+            display: block;
+        }
+
+        .metric-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+        }
+
+        .btn-invest {
+            background-color: var(--agri-green);
+            border: none;
+            padding: 15px;
+            border-radius: 14px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-invest:hover {
+            background-color: #2d6a4f;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(27, 67, 50, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-intersect me-2 text-warning"></i> AGRI-CHAIN
+            </a>
+            <a href="/dashboard" class="btn btn-outline-light btn-sm rounded-pill px-4">
+                <i class="bi bi-arrow-left me-1"></i> Marketplace
+            </a>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">
+                        <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <img src="{{ url_for('static', filename=crop.image_url) }}" class="asset-hero-img mb-5">
+                
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <div>
+                        <h1 class="fw-bold mb-1">{{ crop.name | capitalize }}</h1>
+                        <p class="text-muted mb-0"><i class="bi bi-person-badge me-2"></i>Operator ID: <strong>{{ crop.farmer_id }}</strong></p>
+                    </div>
+                    <span class="badge bg-dark px-3 py-2 rounded-pill fw-normal">Hash ID: #{{ crop.id + 1000 }}</span>
+                </div>
+
+                <h5 class="fw-bold mb-3 mt-5"><i class="bi bi-microscope me-2 text-success"></i>Verified Soil Profile</h5>
+                <div class="row g-3">
+                    <div class="col-4 col-md-4">
+                        <div class="metric-box">
+                            <span class="metric-label">Nitrogen</span>
+                            <span class="metric-value">{{ crop.n_content }}</span>
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-4">
+                        <div class="metric-box">
+                            <span class="metric-label">Phosphorus</span>
+                            <span class="metric-value">{{ crop.p_content }}</span>
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-4">
+                        <div class="metric-box">
+                            <span class="metric-label">Potassium</span>
+                            <span class="metric-value">{{ crop.k_content }}</span>
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-4">
+                        <div class="metric-box">
+                            <span class="metric-label">Soil pH</span>
+                            <span class="metric-value">{{ crop.ph }}</span>
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-4">
+                        <div class="metric-box">
+                            <span class="metric-label">Temp °C</span>
+                            <span class="metric-value">{{ crop.temp }}</span>
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-4">
+                        <div class="metric-box">
+                            <span class="metric-label">Rainfall</span>
+                            <span class="metric-value">{{ crop.rainfall }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold mb-4 mt-5"><i class="bi bi-hdd-network me-2 text-success"></i>Blockchain Growth Proofs</h5>
+                <div class="timeline-container">
+                    {% if crop.updates %}
+                        {% for update in crop.updates | reverse %}
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="fw-bold text-success mb-0">{{ update.status_text }}</h6>
+                                <small class="text-muted fw-bold">{{ update.timestamp.strftime('%d %b %Y') }}</small>
+                            </div>
+                            <p class="small text-muted mb-3">Immutable growth confirmation uploaded by farmer.</p>
+                            {% if update.image_url %}
+                                <img src="{{ url_for('static', filename=update.image_url) }}" class="img-fluid rounded-4 shadow-sm border" style="max-height: 250px;">
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="p-4 border rounded-4 bg-white text-center text-muted">
+                            <i class="bi bi-hourglass-split d-block mb-2 fs-4"></i>
+                            <small>Initial contract deployed. Growth proof pending.</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card p-4 sticky-top" style="top: 100px;">
+                    <h4 class="fw-bold mb-4">Investment Console</h4>
+
+                    <div class="ai-verification-card p-4 mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-4 text-center">
+                                <div class="display-5 fw-bold {% if ai_score > 80 %}text-success{% else %}text-warning{% endif %}">
+                                    {{ ai_score }}%
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <span class="badge {% if ai_score > 80 %}bg-success{% else %}bg-warning text-dark{% endif %} mb-1">
+                                    Probability of Yield
+                                </span>
+                                <p class="small text-muted mb-0">ML Verification Match</p>
+                            </div>
+                        </div>
+                        <p class="small text-muted mt-3 mb-0" style="font-size: 0.75rem; line-height: 1.5;">
+                            Our <strong>Random Forest Regressor</strong> calculated a {{ ai_score }}% compatibility between local soil conditions and the crop's biological requirements.
+                        </p>
+                    </div>
+
+                    <div class="px-2">
+                        <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                            <span class="text-muted">Contract Status</span>
+                            <span class="badge bg-info text-dark rounded-pill px-3">{{ crop.status }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-4 border-bottom pb-2">
+                            <span class="text-muted">Liquidity Available</span>
+                            <strong class="text-success">{{ crop.total_shares - crop.sold_shares }} Shares</strong>
+                        </div>
+                        <div class="bg-light p-3 rounded-4 mb-4 border">
+    <div class="d-flex justify-content-between mb-2">
+        <span class="text-muted small">Unit Price:</span>
+        <span class="fw-bold">₹{{ (crop.funding_goal / crop.total_shares) | round(2) }}</span>
+    </div>
+    <div id="total-cost-display" class="d-flex justify-content-between pt-2 border-top">
+        <span class="fw-bold">Estimated Total:</span>
+        <span class="fw-bold text-success" id="calc-total">₹0.00</span>
+    </div>
+</div>
+<div class="card bg-light border-dashed p-3 mt-3">
+    <h6 class="fw-bold small mb-2"><i class="bi bi-shield-check me-2"></i>Investor Protection</h6>
+    <ul class="small text-muted ps-3 mb-0">
+        <li>30% Released at Sowing</li>
+        <li>40% Held in Escrow until Flowering</li>
+        <li>Refund guarantee if Geotagged proofs fail</li>
+    </ul>
+</div>
+                        <div class="mb-5">
+                            {% set pct = (crop.sold_shares / crop.total_shares) * 100 %}
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">Funding Progress</span>
+                                <span class="text-dark">{{ pct | round | int }}%</span>
+                            </div>
+                            <div class="progress" style="height: 10px; background-color: #eee; border-radius: 10px;">
+                                <div class="progress-bar bg-success" style="width: {{ pct }}%; border-radius: 10px;"></div>
+                            </div>
+                        </div>
+
+                        {% if crop.status == 'Open' %}
+                            <form action="/invest/{{ crop.id }}" method="POST">
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold">Select Subscription Volume</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-layers text-muted"></i></span>
+                                        <input type="number" name="quantity" class="form-control border-start-0" 
+                                               value="1" min="1" max="{{ crop.total_shares - crop.sold_shares }}" required>
+                                    </div>
+                                    <div class="form-text text-center mt-2 small">By clicking below, you sign the digital contract.</div>
+                                </div>
+                                <button class="btn btn-invest btn-success w-100 mb-3 shadow">
+                                    EXECUTE INVESTMENT
+                                </button>
+                            </form>
+                        {% else %}
+                            <div class="alert alert-secondary text-center py-3 rounded-4 fw-bold">
+                                Asset Fully Funded / Closed
+                            </div>
+                        {% endif %}
+
+                        <div class="text-center mt-4">
+                            <i class="bi bi-shield-shaded text-muted me-1"></i>
+                            <span class="text-muted" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;">
+                                Private Chain Security Enabled
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    const shareInput = document.querySelector('input[name="quantity"]');
+    const totalDisplay = document.getElementById('calc-total');
+    const unitPrice = {{ (crop.funding_goal / crop.total_shares) }};
+
+    shareInput.addEventListener('input', () => {
+        const total = (shareInput.value * unitPrice).toFixed(2);
+        totalDisplay.innerText = '₹' + total;
+    });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

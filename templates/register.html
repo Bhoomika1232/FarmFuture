@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Agri-Chain Ledger</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --agri-green: #1b4332;
+            --agri-gold: #ffb703;
+            --agri-bg: #f8f9fa;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--agri-bg);
+            color: #333;
+        }
+
+        .navbar {
+            background-color: var(--agri-green) !important;
+            padding: 1rem 0;
+        }
+
+        .register-card { 
+            border: none; 
+            border-radius: 24px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05); 
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            background-color: var(--agri-green);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+            background-color: #fcfcfc;
+            transition: 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 4px rgba(27, 67, 50, 0.1);
+            border-color: var(--agri-green);
+            background-color: #fff;
+        }
+
+        .btn-success { 
+            background-color: var(--agri-green); 
+            border: none; 
+            padding: 14px; 
+            font-weight: 700;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-success:hover {
+            background-color: #2d6a4f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(27, 67, 50, 0.2);
+        }
+
+        .input-group-text {
+            border-radius: 12px 0 0 12px;
+            background-color: #f8f9fa;
+            border-right: none;
+            color: var(--agri-green);
+        }
+
+        .has-icon .form-control {
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark mb-5">
+        <div class="container justify-content-center">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-intersect me-2 text-warning"></i> AGRI-CHAIN
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-xl-6">
+                <div class="card register-card">
+                    <div class="card-header-custom">
+                        <h2 class="fw-bold mb-1">Join the Ecosystem</h2>
+                        <p class="mb-0 opacity-75">Secure your identity on the decentralized ledger</p>
+                    </div>
+                    
+                    <div class="card-body p-4 p-md-5">
+                        <form action="/register" method="POST">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Username</label>
+                                    <div class="input-group has-icon">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" name="username" class="form-control" placeholder="johndoe123" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Platform Role</label>
+                                    <div class="input-group has-icon">
+                                        <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                                        <select name="role" class="form-select" required>
+                                            <option value="investor">Investor (Consumer)</option>
+                                            <option value="farmer">Farmer (Producer)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Security Password</label>
+                                <div class="input-group has-icon">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                                </div>
+                            </div>
+
+                            <hr class="my-4 opacity-50">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Contact Number</label>
+                                    <div class="input-group has-icon">
+                                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                        <input type="tel" name="phone" class="form-control" placeholder="+91 98765 43210" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Government ID</label>
+                                    <div class="input-group has-icon">
+                                        <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                        <input type="text" name="id_number" class="form-control" placeholder="ID Number" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Full Physical Address</label>
+                                <div class="input-group has-icon">
+                                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                    <textarea name="address" class="form-control" rows="2" placeholder="Street, City, State, ZIP" required></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 shadow-sm py-3 mb-3">
+                                Initialize Account & Join
+                            </button>
+                            
+                            <div class="text-center">
+                                <p class="small text-muted mb-0">Already registered on the chain? 
+                                    <a href="/login" class="text-success text-decoration-none fw-bold">Login Portal</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <p class="text-center mt-4 text-muted small">
+                    Secure 256-bit encryption enabled &copy; 2026 Agri-Chain Ecosystem
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

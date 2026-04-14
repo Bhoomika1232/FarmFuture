@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Crop Advisor | Agri-Chain Lab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --agri-green: #1b4332;
+            --agri-gold: #ffb703;
+            --agri-bg: #f4f7f6;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--agri-bg);
+            color: #333;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: var(--agri-green) !important;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .navbar-brand { font-weight: 800; color: var(--agri-gold) !important; }
+
+        /* Card Styling */
+        .advisor-card {
+            border: none;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            overflow: hidden;
+            background: white;
+        }
+
+        .advisor-header {
+            background: linear-gradient(135deg, var(--agri-green) 0%, #2d6a4f 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #6c757d;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            background-color: #f8f9fa;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            background-color: #fff;
+            border-color: var(--agri-green);
+            box-shadow: 0 0 0 4px rgba(27, 67, 50, 0.1);
+        }
+
+        .btn-ai {
+            background-color: var(--agri-green);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .btn-ai:hover {
+            background-color: #2d6a4f;
+            transform: translateY(-2px);
+            color: var(--agri-gold);
+        }
+
+        /* Prediction Result UI */
+        .prediction-box {
+            background: linear-gradient(to right, #f0fff4, #ffffff);
+            border: 2px solid #c6f6d5;
+            border-radius: 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .crop-name {
+            color: var(--agri-green);
+            font-size: 3rem;
+            letter-spacing: -2px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-cpu-fill me-2"></i> AGRI-CHAIN AI LAB
+            </a>
+            <div class="ms-auto">
+                <a href="/dashboard" class="btn btn-outline-light btn-sm px-4 rounded-pill">
+                    <i class="bi bi-arrow-left me-1"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                
+                <div class="card advisor-card mb-5">
+                    <div class="advisor-header">
+                        <i class="bi bi-robot fs-1 text-warning mb-2"></i>
+                        <h2 class="fw-bold mb-1">Precision Soil Analysis</h2>
+                        <p class="opacity-75 mb-0 px-lg-5">Input your farm's environmental data. Our Random Forest model will predict the most compatible crop for optimal yield.</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <form method="POST">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <label class="form-label"><i class="bi bi-droplet-fill me-1"></i>Nitrogen (N)</label>
+                                    <input type="number" name="N" class="form-control" placeholder="0-140" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label"><i class="bi bi-droplet-fill me-1 text-primary"></i>Phosphorus (P)</label>
+                                    <input type="number" name="P" class="form-control" placeholder="5-145" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label"><i class="bi bi-droplet-fill me-1 text-warning"></i>Potassium (K)</label>
+                                    <input type="number" name="K" class="form-control" placeholder="5-205" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-thermometer-half me-1"></i>Temperature (°C)</label>
+                                    <input type="number" step="0.1" name="temp" class="form-control" placeholder="e.g. 25.5" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-moisture me-1"></i>Humidity (%)</label>
+                                    <input type="number" step="0.1" name="hum" class="form-control" placeholder="e.g. 80" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-eyedropper me-1"></i>Soil pH Level</label>
+                                    <input type="number" step="0.1" name="ph" class="form-control" placeholder="0-14" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-cloud-rain me-1"></i>Annual Rainfall (mm)</label>
+                                    <input type="number" step="0.1" name="rain" class="form-control" placeholder="e.g. 200" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-ai w-100 mt-5 shadow-sm">
+                                <i class="bi bi-lightning-charge-fill me-2"></i> Run Machine Learning Prediction
+                            </button>
+                        </form>
+
+                        {% if prediction %}
+                        <div class="prediction-box mt-5 p-5 text-center">
+                            <span class="badge bg-success mb-3 px-3 py-2 rounded-pill">Model Confidence High</span>
+                            <h5 class="text-uppercase fw-bold text-muted mb-1 small tracking-widest">Recommended Crop</h5>
+                            <h1 class="fw-bold crop-name mb-4">{{ prediction }}</h1>
+                            
+                            <hr class="w-25 mx-auto mb-4">
+                            
+                            <p class="text-muted small mb-4">Ready to tokenize this asset? Auto-fill the listing form with these metrics.</p>
+                            
+                            <a href="/new_crop?name={{ prediction }}&n={{ request.form.N }}&p={{ request.form.P }}&k={{ request.form.K }}&temp={{ request.form.temp }}&hum={{ request.form.hum }}&ph={{ request.form.ph }}&rain={{ request.form.rain }}" 
+                               class="btn btn-success btn-lg px-5 py-3 fw-bold rounded-pill">
+                               <i class="bi bi-plus-circle me-2"></i>List {{ prediction.capitalize() }} for Funding
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="text-center text-muted small pb-4">
+                    Analytical Model Version: 3.2.1 | Data Engine: Random Forest Regressor
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

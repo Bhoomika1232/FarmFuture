@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace | Agri-Chain Investor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --agri-green: #1b4332;
+            --agri-gold: #ffb703;
+            --agri-bg: #f8f9fa;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--agri-bg);
+            color: #333;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: var(--agri-green) !important;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .navbar-brand { font-weight: 800; color: var(--agri-gold) !important; }
+        .nav-link { color: rgba(255,255,255,0.8) !important; font-weight: 500; transition: 0.3s; }
+        .nav-link:hover { color: var(--agri-gold) !important; }
+        .nav-link.active { color: #fff !important; font-weight: 700; border-bottom: 2px solid var(--agri-gold); }
+
+        /* Card & UI Elements */
+        .card { 
+            border: none; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            background: white;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .card-img-top {
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+            background-color: #eee;
+            margin-bottom: 5px;
+        }
+
+        .btn-agri {
+            background-color: var(--agri-green);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 10px;
+            transition: 0.3s;
+        }
+        .btn-agri:hover {
+            background-color: #2d6a4f;
+            color: var(--agri-gold);
+        }
+
+        .price-tag {
+            font-weight: 800;
+            color: var(--agri-green);
+            font-size: 1.1rem;
+        }
+
+        .section-title {
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--agri-green);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-intersect me-2"></i> AGRI-CHAIN
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-3">
+                    <li class="nav-item"><a class="nav-link active" href="/dashboard">Marketplace</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/my_investments">My Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+                    <li class="nav-item ms-lg-2">
+                        <a href="/logout" class="btn btn-outline-light btn-sm px-3 rounded-pill">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="section-title mb-1">Asset Marketplace</h2>
+                <p class="text-muted">Explore and fund high-yield, AI-verified agricultural opportunities.</p>
+            </div>
+            <div class="text-end d-none d-md-block">
+                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">
+                    <i class="bi bi-shield-check me-1"></i> Private Ledger Active
+                </span>
+            </div>
+        </div>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">
+                  <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="row g-4">
+            {% for crop in marketplace %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="position-relative">
+                        <img src="{{ url_for('static', filename=crop.image_url) }}" class="card-img-top">
+                        <span class="position-absolute top-0 end-0 m-3 badge bg-dark opacity-75">#{{ crop.id + 1000 }}</span>
+                    </div>
+                    
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h4 class="fw-bold mb-0 text-dark">{{ crop.name.capitalize() }}</h4>
+                            <span class="price-tag">₹{{ crop.funding_goal }}</span>
+                        </div>
+                        
+                        <p class="small text-muted mb-4">
+                            <i class="bi bi-person-circle me-1"></i> Farmer ID: {{ crop.farmer_id }}
+                        </p>
+                        
+                        <div class="mb-4 mt-auto">
+                            {% set pct = (crop.sold_shares / crop.total_shares * 100) if crop.total_shares > 0 else 0 %}
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">Funding Progress</span>
+                                <span class="text-success">{{ pct | round | int }}%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: {{ pct }}%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between x-small text-muted mt-1" style="font-size: 0.75rem;">
+                                <span>{{ crop.sold_shares }} Sold</span>
+                                <span>Total {{ crop.total_shares }} Shares</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <span class="text-muted small d-block">Price Per Share</span>
+        <span class="fw-bold text-success fs-5">
+            {# Calculation: Goal / Total Shares #}
+            ₹{{ (crop.funding_goal / crop.total_shares) | round(2) }}
+        </span>
+    </div>
+    <div class="text-end">
+        <span class="text-muted small d-block">Total Goal</span>
+        <span class="fw-bold text-dark">₹{{ crop.funding_goal }}</span>
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-center mt-2">
+    <span class="small text-muted">Risk Profile:</span>
+    {% if crop.ph > 6 and crop.ph < 7.5 %}
+        <span class="badge bg-success-subtle text-success border border-success">Low Risk</span>
+    {% else %}
+        <span class="badge bg-warning-subtle text-warning border border-warning">Moderate Risk</span>
+    {% endif %}
+</div>
+                        <a href="/crop/{{ crop.id }}" class="btn btn-agri w-100">
+                            View Analytics & Invest
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 py-5 text-center">
+                <div class="p-5 bg-white rounded-5 shadow-sm">
+                    <i class="bi bi-search fs-1 text-muted mb-3"></i>
+                    <h4 class="fw-bold text-muted">No Open Assets</h4>
+                    <p class="text-muted small">All agricultural contracts are currently fully funded. Check back shortly for new listings.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer class="py-4 text-center text-muted small mt-5 border-top bg-white">
+        <div class="container">
+            &copy; 2026 Agri-Chain Ecosystem &bull; Secure Investment Dashboard
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Panel | Agri-Chain Ledger</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --agri-green: #1b4332;
+            --agri-gold: #ffb703;
+            --agri-bg: #f4f7f6;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--agri-bg);
+            color: #333;
+        }
+
+        /* Navbar Customization */
+        .navbar {
+            background-color: var(--agri-green) !important;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar-brand { font-weight: 800; letter-spacing: -1px; color: var(--agri-gold) !important; }
+        
+        .nav-link { color: rgba(255,255,255,0.8) !important; font-weight: 500; transition: 0.3s; }
+        .nav-link:hover { color: var(--agri-gold) !important; }
+        .nav-link.active { color: #fff !important; font-weight: 700; }
+
+        /* Dashboard Components */
+        .page-header {
+            background: linear-gradient(135deg, var(--agri-green) 0%, #2d6a4f 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            border-radius: 0 0 40px 40px;
+        }
+
+        .card { 
+            border: none; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+
+        .settlement-card {
+            border-left: 5px solid var(--agri-gold);
+        }
+
+        .details-box {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 0.9rem;
+            border: 1px dashed #dee2e6;
+        }
+
+        .ai-banner {
+            background-color: #fff;
+            border: 2px solid var(--agri-green);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ai-banner::after {
+            content: "AI";
+            position: absolute;
+            right: -10px;
+            bottom: -20px;
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(27, 67, 50, 0.05);
+            z-index: 0;
+        }
+
+        .btn-success {
+            background-color: var(--agri-green);
+            border: none;
+            font-weight: 600;
+            border-radius: 10px;
+        }
+
+        .btn-success:hover { background-color: #2d6a4f; }
+
+        .badge-settlement {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-intersect me-2"></i> AGRI-CHAIN
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-2">
+                    <li class="nav-item"><a class="nav-link active" href="/dashboard"><i class="bi bi-bell me-1"></i> Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/my_crops"><i class="bi bi-grid me-1"></i> Manage Crops</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/new_crop"><i class="bi bi-plus-circle me-1"></i> Add Crop</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a href="/logout" class="btn btn-outline-danger btn-sm px-3">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header shadow-sm">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="fw-bold mb-1">Farmer Panel</h2>
+                    <p class="mb-0 opacity-75">Welcome back! Review your active settlements and soil data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        
+        <div class="card ai-banner mb-5 shadow-sm">
+            <div class="card-body p-4 position-relative" style="z-index: 1;">
+                <div class="row align-items-center text-center text-md-start">
+                    <div class="col-md-8">
+                        <h4 class="fw-bold text-success mb-2">Unsure what to plant next?</h4>
+                        <p class="text-muted mb-md-0">Use our <strong>AI Soil Advisor</strong>. We analyze 7 environmental factors to predict your most profitable crop.</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a href="/ai_advisor" class="btn btn-success btn-lg px-4 shadow-sm">
+                            <i class="bi bi-cpu me-2"></i>Open AI Lab
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Pending Actions Required</h4>
+            <span class="badge bg-warning text-dark ms-3 rounded-pill">Needs Attention</span>
+        </div>
+
+        {% if settlements %}
+        <div class="row">
+            {% for s in settlements %}
+            <div class="col-lg-6 mb-4">
+                <div class="card settlement-card h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="fw-bold mb-0 text-success">
+                                <i class="bi bi-bag-check me-2"></i>{{ s.investment.crop.name.capitalize() }}
+                            </h5>
+                            <span class="badge bg-light text-primary border badge-settlement">
+                                {{ s.settlement_type.capitalize() }} Settlement
+                            </span>
+                        </div>
+
+                        <p class="small text-muted mb-3">The investor has requested fulfillment. Please review the details below:</p>
+
+                        <div class="details-box mb-4">
+                            <strong class="text-dark d-block mb-2">
+                                <i class="bi bi-info-circle me-1"></i> 
+                                {% if s.settlement_type == 'interest' %}Investor's Bank Details{% else %}Shipping Address Information{% endif %}
+                            </strong>
+                            <div style="white-space: pre-wrap; line-height: 1.6;">{{ s.details }}</div>
+                        </div>
+
+                        <div class="pt-3 border-top">
+                            <form action="/resolve_settlement/{{ s.id }}" method="POST" enctype="multipart/form-data">
+                                <label class="form-label small fw-bold text-success mb-2">Upload Fulfillment Receipt (Image/PDF)</label>
+                                <div class="input-group">
+                                    <input type="file" name="receipt_image" class="form-control" required>
+                                    <button class="btn btn-success">
+                                        <i class="bi bi-check2-circle me-1"></i> Resolve
+                                    </button>
+                                </div>
+                                <p class="text-muted mt-2 mb-0" style="font-size: 0.75rem;">
+                                    <i class="bi bi-lock me-1"></i> This action will finalize the smart contract and release proof to the investor.
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="card border-0 bg-white shadow-sm p-5 text-center">
+            <div class="mb-3">
+                <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+            </div>
+            <h5 class="fw-bold">You are all caught up!</h5>
+            <p class="text-muted mb-0">No pending settlements or fulfillment requests at this time.</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <footer class="py-4 text-center text-muted small mt-5 border-top bg-white">
+        <div class="container">
+            &copy; 2026 Agri-Chain Ledger System &bull; Farmer Management Portal
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

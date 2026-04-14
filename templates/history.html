@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment History | Agri-Chain</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar-custom { background-color: #0d6efd; } /* Matches your Investor Blue */
+        .card { border: none; border-radius: 15px; }
+        .receipt-preview {
+            max-height: 250px;
+            object-fit: contain;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">Agri-Chain</a>
+            <div class="d-flex gap-3 align-items-center">
+                <a href="/dashboard" class="text-white text-decoration-none">Marketplace</a>
+                <a href="/my_investments" class="text-white text-decoration-none">My Investments</a>
+                <a href="/history" class="text-white fw-bold text-decoration-none">History</a>
+                <a href="/logout" class="btn btn-outline-light btn-sm ms-3">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold">Investment History</h3>
+            <span class="badge bg-secondary px-3 py-2">Archived Contracts</span>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-success border-0 shadow-sm">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            {% for inv in history %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="fw-bold text-primary mb-0">{{ inv.crop.name }}</h5>
+                                <small class="text-muted">Transaction Hash: {{ inv.blockchain_hash[:20] }}...</small>
+                            </div>
+                            <span class="badge bg-success">Resolved</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="row mb-3 small">
+                            <div class="col-6">
+                                <span class="text-muted d-block">Shares Purchased</span>
+                                <strong>{{ inv.shares_owned }} Shares</strong>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span class="text-muted d-block">Settlement Type</span>
+                                <strong class="text-capitalize">{{ inv.settlement.settlement_type if inv.settlement else 'N/A' }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="bg-light p-3 rounded border">
+                            <p class="small fw-bold mb-2 text-uppercase" style="letter-spacing: 1px;">Farmer's Fulfillment Receipt</p>
+                            
+                            {% if inv.settlement and inv.settlement.proof_image %}
+                                <div class="text-center bg-white p-2 rounded border">
+                                    <a href="{{ url_for('static', filename=inv.settlement.proof_image) }}" target="_blank">
+                                        <img src="{{ url_for('static', filename=inv.settlement.proof_image) }}" class="img-fluid receipt-preview rounded" alt="Payment Receipt">
+                                    </a>
+                                    <p class="mt-2 mb-0 x-small text-muted italic">Click image to enlarge receipt</p>
+                                </div>
+                            {% else %}
+                                <div class="py-3 text-center text-muted italic small">
+                                    <i class="bi bi-camera-off"></i> No visual receipt was uploaded for this transaction.
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mt-3 p-2 bg-dark rounded text-success small" style="font-family: monospace; font-size: 0.75rem;">
+                            > BLOCKCHAIN_VERIFIED: TRUE <br>
+                            > STATUS: MOVED_TO_LEDGER_HISTORY <br>
+                            > DATE_RESOLVED: {{ inv.settlement.resolved_at.strftime('%Y-%m-%d') if inv.settlement and inv.settlement.resolved_at else 'Verified' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded shadow-sm">
+                    <h5 class="text-muted">No completed transactions found.</h5>
+                    <p class="small text-muted">Once a farmer resolves your settlement request, it will appear here.</p>
+                    <a href="/dashboard" class="btn btn-primary btn-sm mt-2">Browse Marketplace</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

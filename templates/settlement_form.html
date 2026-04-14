@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settle Asset | Agri-Chain Ledger</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --agri-green: #1b4332;
+            --agri-gold: #ffb703;
+            --agri-bg: #f8f9fa;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--agri-bg);
+            color: #333;
+        }
+
+        .navbar {
+            background-color: var(--agri-green) !important;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card { 
+            border: none; 
+            border-radius: 24px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 25px !important;
+            border: none !important;
+        }
+
+        .form-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: #6c757d;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+            background-color: #fcfcfc;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(27, 67, 50, 0.1);
+            border-color: var(--agri-green);
+        }
+
+        .btn-finalize {
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .roi-theme { color: #1b4332; }
+        .ship-theme { color: #212529; }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark mb-5">
+        <div class="container justify-content-center">
+            <span class="navbar-brand fw-bold">
+                <i class="bi bi-shield-shaded me-2 text-warning"></i> CONTRACT SETTLEMENT
+            </span>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-dark text-white text-center">
+                        <p class="small text-uppercase opacity-75 mb-1">Finalizing Asset Contract</p>
+                        <h5 class="mb-0 fw-bold">{{ investment.crop.name.capitalize() }}</h5>
+                    </div>
+                    
+                    <div class="card-body p-4 p-md-5">
+                        
+                        {% if action == 'interest' %}
+                        <div class="icon-box bg-success-subtle text-success">
+                            <i class="bi bi-bank"></i>
+                        </div>
+                        <h4 class="fw-bold roi-theme mb-2">Claim Capital + ROI</h4>
+                        <p class="text-muted small mb-4">
+                            The harvest is complete. Enter your verified banking credentials to receive the liquidation value of your shares.
+                        </p>
+                        
+                        <form method="POST">
+                            <div class="row g-3">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Bank Institution</label>
+                                    <input type="text" name="bank_name" class="form-control" placeholder="HDFC, SBI, etc." required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Account Holder</label>
+                                    <input type="text" name="holder_name" class="form-control" placeholder="Legal Name" required>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Account Number</label>
+                                    <input type="text" name="acc_number" class="form-control" placeholder="0000 0000 0000" required>
+                                </div>
+                                <div class="col-12 mb-4">
+                                    <label class="form-label">IFSC Routing Code</label>
+                                    <input type="text" name="ifsc" class="form-control" placeholder="ABCD0123456" required>
+                                </div>
+                            </div>
+                            <button class="btn btn-success btn-finalize w-100 shadow-sm">
+                                <i class="bi bi-check2-circle me-2"></i> Sign & Claim Returns
+                            </button>
+                        </form>
+
+                        {% else %}
+                        <div class="icon-box bg-dark text-white">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <h4 class="fw-bold ship-theme mb-2">Request Physical Delivery</h4>
+                        <p class="text-muted small mb-4">
+                            The farmer will package and ship your fractional share of the harvest. Please confirm your delivery logistics.
+                        </p>
+                        
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">Consignee Full Name</label>
+                                <input type="text" name="ship_name" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Shipping Destination (Full Address)</label>
+                                <textarea name="ship_address" class="form-control" rows="2" required></textarea>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">City/Region</label>
+                                    <input type="text" name="ship_city" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Contact Mobile</label>
+                                    <input type="tel" name="ship_phone" class="form-control" required>
+                                </div>
+                            </div>
+                            <button class="btn btn-dark btn-finalize w-100 shadow">
+                                <i class="bi bi-geo-fill me-2"></i> Confirm Delivery Address
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        <div class="mt-4 text-center">
+                            <a href="/my_investments" class="text-danger small text-decoration-none fw-bold">
+                                <i class="bi bi-x-circle me-1"></i> Cancel Settlement
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-center mt-4 text-muted small">
+                    <i class="bi bi-lock-fill me-1"></i> This transaction is legally binding and recorded on the private ledger.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
